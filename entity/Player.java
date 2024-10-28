@@ -2,7 +2,9 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
-import java.awt.Graphics2D; 
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.awt.image.BufferedImage; 
@@ -22,6 +24,7 @@ public class Player extends Entity {
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
         screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
+        solidArea = new Rectangle(8, 16, 32, 32);
         setDefaultValues();
         getPlayerImage();
     }
@@ -56,20 +59,28 @@ public class Player extends Entity {
 
             if (keyH.upPressed == true) {
                 direction = "up";
-                worldY -= speed;
             }
             if (keyH.downPressed == true) {
                 direction = "down";
-                worldY += speed;
             }
             if (keyH.leftPressed == true) {
-                direction = "left";
-                worldX -= speed;
+                direction = "left";       
             }
             if (keyH.rightPressed == true) {
                 direction = "right";
-                worldX += speed;
             }
+ 
+            collisionOn = false;
+            gp.checker.checkTile(this);
+
+            if (collisionOn == false) {
+                switch (direction) {
+                    case "up": worldY -= speed; break; 
+                    case "down": worldY += speed; break;
+                    case "left": worldX -= speed; break;
+                    case "right": worldX += speed; break;
+                }
+            }  
             spriteCounter ++;
             //change 13 in order to change speed at which sprites switch
             if (spriteCounter > 13) {
