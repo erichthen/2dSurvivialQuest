@@ -11,7 +11,7 @@ public class ChestObj extends SuperObject {
         name = "chest";
 
         try {
-            image = ImageIO.read(getClass().getResourceAsStream(("/res/objects/key.png")));
+            image = ImageIO.read(getClass().getResourceAsStream(("/res/objects/chest.png")));
         }
         catch (IOException e) {
             e.printStackTrace();

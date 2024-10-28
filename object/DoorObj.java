@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 public class DoorObj extends SuperObject{
     
     public DoorObj() {
-        
+
         name = "door";
 
         try {
@@ -16,5 +16,6 @@ public class DoorObj extends SuperObject{
         catch (IOException e) {
             e.printStackTrace();
         }
+        collision = true;
     }
 }

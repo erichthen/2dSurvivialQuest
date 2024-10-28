@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
+import java.awt.Font;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -83,6 +84,16 @@ public class GamePanel extends JPanel implements Runnable {
         player.update();
     }
 
+    public void displayKeyCount(Graphics2D g2) {
+        // Set font and color for the key count display
+        g2.setFont(new Font("Arial", Font.PLAIN, 20));
+        g2.setColor(Color.WHITE);
+        
+        // Display the key count
+        g2.drawString("Keys: " + player.getHasKey(),10, 20); // Position the text at (20, 40)
+    }
+
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;    
@@ -96,6 +107,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2);
+        displayKeyCount(g2);
         g2.dispose();
     }
 
