@@ -9,6 +9,11 @@ import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
 import java.awt.Font;
+import java.io.IOException;
+import java.io.InputStream;
+import java.awt.FontFormatException;
+import java.io.IOException;
+
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -27,6 +32,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int maxWorldRow = 50;
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
+
+    private Font pixelfont;
 
     final int FPS = 60;
 
@@ -47,6 +54,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        loadPixelFont();
     }
 
     public void startGameThread() {
@@ -57,6 +65,16 @@ public class GamePanel extends JPanel implements Runnable {
     public void setupGame() {
         aSetter.setObject();
 
+    }
+    
+    private void loadPixelFont() {
+        try {
+            InputStream is = getClass().getResourceAsStream("/res/fonts/pixelfont.ttf");
+            pixelfont = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(20f);
+        }
+        catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -86,11 +104,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void displayKeyCount(Graphics2D g2) {
         // Set font and color for the key count display
-        g2.setFont(new Font("Arial", Font.PLAIN, 20));
+        
+        g2.setFont(pixelfont);
         g2.setColor(Color.WHITE);
         
         // Display the key count
-        g2.drawString("Keys: " + player.getHasKey(),10, 20); // Position the text at (20, 40)
+        g2.drawString("Keys: " + player.getHasKey(), screenWidth - 100, 27); // Position the text at (20, 40)
     }
 
 
