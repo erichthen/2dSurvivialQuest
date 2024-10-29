@@ -43,13 +43,13 @@ public class AssetSetter {
         gp.obj[6].worldX = 3 * gp.tileSize;
         gp.obj[6].worldY = 23 * gp.tileSize;
 
-        gp.obj[7] = new KeyObj();
+        gp.obj[7] = new KeyObj()   ;
         gp.obj[7].worldX = 45 * gp.tileSize;
         gp.obj[7].worldY = 14 * gp.tileSize;
 
         gp.obj[8] = new BootsObj();
-        gp.obj[8].worldX = 36 * gp.tileSize;
-        gp.obj[8].worldY = 34 * gp.tileSize;
+        gp.obj[8].worldX = 35 * gp.tileSize;
+        gp.obj[8].worldY = 35 * gp.tileSize;
 
     }
 

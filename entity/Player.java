@@ -17,6 +17,10 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
+    public boolean speedBoostActive = false;
+    public long speedBoostStartTime;
+    public boolean blinkMessage = false;
+
     int hasKey = 0;
 
 
@@ -55,6 +59,61 @@ public class Player extends Entity {
         }
         catch (IOException e){
             e.printStackTrace();
+        }
+    }
+
+    public void interactObject(int i) {
+        //if 999, we haven't touched an object
+        if (i != 999) {
+            String objectName = gp.obj[i].name;
+
+            switch (objectName) {
+                case "key":
+                    gp.playSoundEffect(1);
+                    hasKey++;
+                    gp.obj[i] = null;
+                    break;
+                case "door":
+                    if (hasKey > 0) {
+                        gp.playSoundEffect(3);
+                        gp.obj[i] = null;
+                        hasKey--;
+                    }
+                    break;
+                case "boots":
+                    gp.playSoundEffect(2);
+                    activateSpeedBoost();
+                    gp.obj[i] = null;
+                    break;
+            }
+        }
+    }
+
+    public int getHasKey() {
+        return hasKey;
+    }
+
+    public void activateSpeedBoost() {
+        if (!speedBoostActive) {
+            speed += 2;
+            speedBoostActive = true;
+            speedBoostStartTime = System.currentTimeMillis();
+        }
+    }
+
+    public void updateSpeedBoost() {
+        if (speedBoostActive) {
+            long elapsedTime = (System.currentTimeMillis() - speedBoostStartTime) / 1000;
+
+            //blink the speed boost message 5 secs before it ends
+            if (elapsedTime >= 25 && elapsedTime < 30) {
+                blinkMessage = true;
+            }
+            else if (elapsedTime >= 30) {
+                speed -= 2;
+                speedBoostActive = false;
+                blinkMessage = false;
+            }
         }
     }
 
@@ -102,29 +161,7 @@ public class Player extends Entity {
                 spriteCounter = 0;
             }
         }
-    }
-
-    public void interactObject(int i) {
-        //if 999, we haven't touched an object
-        if (i != 999) {
-            String objectName = gp.obj[i].name;
-
-            switch (objectName) {
-                case "key":
-                    hasKey++;
-                    gp.obj[i] = null;
-                    break;
-                case "door":
-                    if (hasKey > 0) {
-                        gp.obj[i] = null;
-                        hasKey--;
-                    }
-            }
-        }
-    }
-
-    public int getHasKey() {
-        return hasKey;
+        updateSpeedBoost();
     }
 
     public void draw(Graphics2D g2) {

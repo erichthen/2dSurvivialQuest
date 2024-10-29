@@ -30,12 +30,14 @@ public class GamePanel extends JPanel implements Runnable {
     //world map settings
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol;
-    public final int worldHeight = tileSize * maxWorldRow;
+    //public final int worldWidth = tileSize * maxWorldCol;
+    //public final int worldHeight = tileSize * maxWorldRow;
 
     private Font pixelfont;
 
     final int FPS = 60;
+    
+    Sound sound = new Sound();
 
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
@@ -44,7 +46,6 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this, keyH);
     public CollisionChecker checker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
-
     public SuperObject obj[] = new SuperObject[10];
 
 
@@ -64,7 +65,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         aSetter.setObject();
-
+        playMusic(0);
     }
     
     private void loadPixelFont() {
@@ -102,14 +103,22 @@ public class GamePanel extends JPanel implements Runnable {
         player.update();
     }
 
-    public void displayKeyCount(Graphics2D g2) {
-        // Set font and color for the key count display
-        
+    public void displayMessages(Graphics2D g2) {
         g2.setFont(pixelfont);
         g2.setColor(Color.WHITE);
-        
-        // Display the key count
         g2.drawString("Keys: " + player.getHasKey(), screenWidth - 100, 27); // Position the text at (20, 40)
+
+        if (player.speedBoostActive) {
+            //blink the message when speed boost is 5 seconds from ending
+            if (player.blinkMessage) {
+                long currentTime = System.currentTimeMillis();
+                if ((currentTime / 500) % 2 == 0) { // blinks every 500ms
+                    g2.drawString("Speed boost active!", screenWidth - 222, 57);
+                }
+            } else {
+                g2.drawString("Speed boost active!", screenWidth - 222, 57);
+            }
+        }
     }
 
 
@@ -126,8 +135,23 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2);
-        displayKeyCount(g2);
+        displayMessages(g2);
         g2.dispose();
+    }
+
+    public void playMusic(int i) {
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+
+    public void stopMusic() {
+        sound.stop();
+    }
+
+    public void playSoundEffect(int i) {
+        sound.setFile(i);
+        sound.play();
     }
 
 }
