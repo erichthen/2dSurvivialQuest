@@ -21,7 +21,7 @@ public class Player extends Entity {
     public long speedBoostStartTime;
     public boolean blinkMessage = false;
 
-    int hasKey = 0;
+    public int keyCount = 0;
 
 
     public Player(GamePanel gp, KeyHandler keyH) {
@@ -70,14 +70,14 @@ public class Player extends Entity {
             switch (objectName) {
                 case "key":
                     gp.playSoundEffect(1);
-                    hasKey++;
+                    keyCount++;
                     gp.obj[i] = null;
                     break;
                 case "door":
-                    if (hasKey > 0) {
+                    if (keyCount > 0) {
                         gp.playSoundEffect(3);
                         gp.obj[i] = null;
-                        hasKey--;
+                        keyCount--;
                     }
                     break;
                 case "boots":
@@ -90,7 +90,7 @@ public class Player extends Entity {
     }
 
     public int getHasKey() {
-        return hasKey;
+        return keyCount;
     }
 
     public void activateSpeedBoost() {

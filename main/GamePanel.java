@@ -6,13 +6,14 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D; 
 import entity.Player;
+import object.KeyObj;
 import object.SuperObject;
 import tile.TileManager;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
 import java.awt.FontFormatException;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
 
 
 public class GamePanel extends JPanel implements Runnable {
@@ -37,17 +38,19 @@ public class GamePanel extends JPanel implements Runnable {
 
     final int FPS = 60;
     
-    Sound sound = new Sound();
+    Sound music = new Sound();
+    Sound soundEffect = new Sound();
 
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
 
+    BufferedImage keyImage;
+
     public Player player = new Player(this, keyH);
     public CollisionChecker checker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
-    public SuperObject obj[] = new SuperObject[10];
-
+    public SuperObject obj[] = new SuperObject[20];
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -103,20 +106,23 @@ public class GamePanel extends JPanel implements Runnable {
         player.update();
     }
 
-    public void displayMessages(Graphics2D g2) {
+    public void displayUI(Graphics2D g2) {
+        KeyObj displayKey = new KeyObj();
+        keyImage = displayKey.image;
+        
         g2.setFont(pixelfont);
         g2.setColor(Color.WHITE);
-        g2.drawString("Keys: " + player.getHasKey(), screenWidth - 100, 27); // Position the text at (20, 40)
-
+        g2.drawImage(keyImage, screenWidth - 115, 18, 30, 30, null);
+        g2.drawString("x " + this.player.keyCount, screenWidth - 80, 40);
         if (player.speedBoostActive) {
             //blink the message when speed boost is 5 seconds from ending
             if (player.blinkMessage) {
                 long currentTime = System.currentTimeMillis();
                 if ((currentTime / 500) % 2 == 0) { // blinks every 500ms
-                    g2.drawString("Speed boost active!", screenWidth - 222, 57);
+                    g2.drawString("Speed boost active!", screenWidth - 222, 69);
                 }
             } else {
-                g2.drawString("Speed boost active!", screenWidth - 222, 57);
+                g2.drawString("Speed boost active!", screenWidth - 222, 69);
             }
         }
     }
@@ -135,23 +141,23 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2);
-        displayMessages(g2);
+        displayUI(g2);
         g2.dispose();
     }
 
     public void playMusic(int i) {
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        music.setFile(i);
+        music.play();
+        music.loop();
     }
 
     public void stopMusic() {
-        sound.stop();
+        soundEffect.stop();
     }
 
     public void playSoundEffect(int i) {
-        sound.setFile(i);
-        sound.play();
+        soundEffect.setFile(i);
+        soundEffect.play();
     }
 
 }
