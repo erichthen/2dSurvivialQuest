@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
     Sound soundEffect = new Sound();
 
     TileManager tileM = new TileManager(this);
-    KeyHandler keyH = new KeyHandler();
+    KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
 
     BufferedImage keyImage;
@@ -109,20 +109,24 @@ public class GamePanel extends JPanel implements Runnable {
     public void displayUI(Graphics2D g2) {
         KeyObj displayKey = new KeyObj();
         keyImage = displayKey.image;
-        
+    
         g2.setFont(pixelfont);
         g2.setColor(Color.WHITE);
         g2.drawImage(keyImage, screenWidth - 115, 18, 30, 30, null);
         g2.drawString("x " + this.player.keyCount, screenWidth - 80, 40);
+    
         if (player.speedBoostActive) {
-            //blink the message when speed boost is 5 seconds from ending
+            int remainingTime = player.getRemainingBoostTime(); 
+            String boostTimeText = "Speed boost: " + remainingTime + "s";
+    
+            // Blink the message when speed boost is 5 seconds from ending
             if (player.blinkMessage) {
                 long currentTime = System.currentTimeMillis();
                 if ((currentTime / 500) % 2 == 0) { // blinks every 500ms
-                    g2.drawString("Speed boost active!", screenWidth - 222, 69);
+                    g2.drawString(boostTimeText, screenWidth - 210, 69);
                 }
             } else {
-                g2.drawString("Speed boost active!", screenWidth - 222, 69);
+                g2.drawString(boostTimeText, screenWidth - 210, 69);
             }
         }
     }

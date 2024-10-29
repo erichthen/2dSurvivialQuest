@@ -94,7 +94,9 @@ public class Player extends Entity {
     }
 
     public void activateSpeedBoost() {
-        if (!speedBoostActive) {
+        if (speedBoostActive) {
+            speedBoostStartTime += 30000; 
+        } else {
             speed += 2;
             speedBoostActive = true;
             speedBoostStartTime = System.currentTimeMillis();
@@ -115,6 +117,14 @@ public class Player extends Entity {
                 blinkMessage = false;
             }
         }
+    }
+
+    public int getRemainingBoostTime() {
+        if (speedBoostActive) {
+            long elapsedTime = (System.currentTimeMillis() - speedBoostStartTime) / 1000;
+            return 30 - (int) elapsedTime; // Calculate remaining time in seconds
+        }
+        return 0; // No speed boost active
     }
 
     public void update() {
