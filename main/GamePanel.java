@@ -107,7 +107,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void displayUI(Graphics2D g2) {
-        KeyObj displayKey = new KeyObj();
+        KeyObj displayKey = new KeyObj(this);
         keyImage = displayKey.image;
     
         g2.setFont(pixelfont);

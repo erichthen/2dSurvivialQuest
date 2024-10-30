@@ -19,20 +19,60 @@ public class TileManager {
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
-        tile = new Tile[10];
+        tile = new Tile[50];
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
-        loadMap("/res/maps/world01.txt");
+        loadMap("/res/maps/world02.txt");
     }
 
     public void getTileImage() {
-        tileSetup(0, "grass", false);
-        tileSetup(1, "wall", true);
-        tileSetup(2, "water", true);
-        tileSetup(3, "earth", false);
-        tileSetup(4, "tree", true);
-        tileSetup(5, "sand", false);
+
+        //placeholder to avoid null ptr exception
+        tileSetup(0, "grass00", false);
+        tileSetup(1, "grass00", false);
+        tileSetup(2, "grass00", false);
+        tileSetup(3, "grass00", false);
+        tileSetup(4, "grass00", false);
+        tileSetup(5, "grass00", false);
+        tileSetup(6, "grass00", false);
+        tileSetup(7, "grass00", false);
+        tileSetup(8, "grass00", false);
+        tileSetup(9, "grass00", false);
+        tileSetup(10, "grass00", false);
+
+        tileSetup(11, "grass01", false);
+        tileSetup(12, "water00", true);
+        tileSetup(13, "water01", true);
+        tileSetup(14, "water02", true);
+        tileSetup(15, "water03", true);
+        tileSetup(16, "water04", true);
+        tileSetup(17, "water05", true);
+        tileSetup(18, "water06", true);
+        tileSetup(19, "water07", true);
+        tileSetup(20, "water08", true);
+        tileSetup(21, "water09", true);
+        tileSetup(22, "water10", true);
+        tileSetup(23, "water11", true);
+        tileSetup(24, "water12", true);
+        tileSetup(25, "water13", true);
+        tileSetup(26, "road00", false);
+        tileSetup(27, "road01", false);
+        tileSetup(28, "road02", false);
+        tileSetup(29, "road03", false);
+        tileSetup(30, "road04", false);
+        tileSetup(31, "road05", false);
+        tileSetup(32, "road06", false);
+        tileSetup(33, "road07", false);
+        tileSetup(34, "road08", false);
+        tileSetup(35, "road09", false);
+        tileSetup(36, "road10", false);
+        tileSetup(37, "road11", false);
+        tileSetup(38, "road12", false);
+        tileSetup(39, "earth", false);
+        tileSetup(40, "wall", true);
+        tileSetup(41, "tree", true);
+
     }
 
     public void tileSetup(int index, String name, boolean collision) {
@@ -89,14 +129,14 @@ public class TileManager {
 
             int worldX = worldCol * gp.tileSize;
             int worldY = worldRow * gp.tileSize;
-            double screenX = worldX - gp.player.worldX + gp.player.screenX;
-            double screenY = worldY - gp.player.worldY + gp.player.screenY;
+            int screenX = worldX - gp.player.worldX + gp.player.screenX;
+            int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
             if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX && 
               worldX - gp.tileSize < gp.player.worldX + gp.player.screenX && 
               worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
               worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-                g2.drawImage(tile[tileNum].image, (int)screenX, (int)screenY, gp.tileSize, gp.tileSize, null);
+                g2.drawImage(tile[tileNum].image, screenX, screenY,null);
             }
 
             worldCol++;
