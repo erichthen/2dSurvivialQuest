@@ -52,6 +52,10 @@ public class GamePanel extends JPanel implements Runnable {
     public AssetSetter aSetter = new AssetSetter(this);
     public SuperObject obj[] = new SuperObject[20];
 
+    public int gameState;
+    public final int playState = 1;
+    public final int pauseState = 2;
+
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
