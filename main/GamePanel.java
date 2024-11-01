@@ -6,14 +6,13 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D; 
 import entity.Player;
-import object.KeyObj;
 import object.SuperObject;
 import tile.TileManager;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
 import java.awt.FontFormatException;
-import java.awt.image.BufferedImage;
+import entity.Entity;
 
 
 public class GamePanel extends JPanel implements Runnable {
@@ -45,16 +44,17 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
 
-    BufferedImage keyImage;
-
     public Player player = new Player(this, keyH);
     public CollisionChecker checker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public SuperObject obj[] = new SuperObject[20];
+    public Entity npc[] = new Entity[10];
 
     public int gameState;
     public final int playState = 1;
     public final int pauseState = 2;
+
+    Graphics2D g2;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -72,7 +72,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         aSetter.setObject();
+        aSetter.setNPC();
         playMusic(0);
+        stopMusic();
+        gameState = playState;
     }
     
     private void loadPixelFont() {
@@ -83,6 +86,72 @@ public class GamePanel extends JPanel implements Runnable {
         catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
+    
+    }
+
+    public void displayPauseScreen(Graphics2D g2) {
+        String text = "GAME PAUSED";
+        
+        Font largeFont = pixelfont.deriveFont(40f); 
+        g2.setFont(largeFont);
+        g2.setColor(Color.WHITE);
+    
+        int x = getXForCenteredText(g2, text);
+        int y = this.screenHeight / 2;
+        g2.drawString(text, x, y);
+    
+        //reset font
+        g2.setFont(pixelfont);
+    }
+    
+    public int getXForCenteredText(Graphics2D g2, String text) {
+        int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+        int x = this.screenWidth / 2 - length / 2;
+        return x;
+    }
+    
+    public void displayUI(Graphics2D g2) {
+    
+        g2.setFont(pixelfont);
+        g2.setColor(Color.WHITE);
+    
+        if (player.speedBoostActive) {
+            int remainingTime = player.getRemainingBoostTime();
+            String boostTimeText = "Speed boost: " + remainingTime + "s";
+            
+            //blink the message when speed boost is almost out
+            if (player.blinkMessage) {
+                long currentTime = System.currentTimeMillis();
+                if ((currentTime / 500) % 2 == 0) {
+                    g2.drawString(boostTimeText, screenWidth - 210, 69);
+                }
+            } else {
+                g2.drawString(boostTimeText, screenWidth - 210, 69);
+            }
+        }
+    
+        if (gameState == pauseState) {
+            music.stop();
+            displayPauseScreen(g2);
+        }
+        else {
+            music.play();
+        }
+    }
+
+    public void playMusic(int i) {
+        music.setFile(i);
+        music.play();
+        music.loop();
+    }
+
+    public void stopMusic() {
+        soundEffect.stop();
+    }
+
+    public void playSoundEffect(int i) {
+        soundEffect.setFile(i);
+        soundEffect.play();
     }
 
     @Override
@@ -107,34 +176,10 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        player.update();
-    }
-
-    public void displayUI(Graphics2D g2) {
-        KeyObj displayKey = new KeyObj(this);
-        keyImage = displayKey.image;
-    
-        g2.setFont(pixelfont);
-        g2.setColor(Color.WHITE);
-        g2.drawImage(keyImage, screenWidth - 115, 18, 30, 30, null);
-        g2.drawString("x " + this.player.keyCount, screenWidth - 80, 40);
-    
-        if (player.speedBoostActive) {
-            int remainingTime = player.getRemainingBoostTime(); 
-            String boostTimeText = "Speed boost: " + remainingTime + "s";
-    
-            // Blink the message when speed boost is 5 seconds from ending
-            if (player.blinkMessage) {
-                long currentTime = System.currentTimeMillis();
-                if ((currentTime / 500) % 2 == 0) { // blinks every 500ms
-                    g2.drawString(boostTimeText, screenWidth - 210, 69);
-                }
-            } else {
-                g2.drawString(boostTimeText, screenWidth - 210, 69);
-            }
+        if (gameState == playState) {
+            player.update();
         }
     }
-
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -148,24 +193,14 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
+        for (int i = 0; i < npc.length; i++) {
+            if (npc[i] != null) {
+                npc[i].draw(g2);
+            }
+        }
+
         player.draw(g2);
         displayUI(g2);
         g2.dispose();
     }
-
-    public void playMusic(int i) {
-        music.setFile(i);
-        music.play();
-        music.loop();
-    }
-
-    public void stopMusic() {
-        soundEffect.stop();
-    }
-
-    public void playSoundEffect(int i) {
-        soundEffect.setFile(i);
-        soundEffect.play();
-    }
-
 }
