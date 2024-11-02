@@ -20,6 +20,8 @@ public class Entity {
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
+    public int actionLockCounter = 0;
+    
 
     public Entity(GamePanel gp) {
         this.gp = gp;
@@ -97,7 +99,30 @@ public class Entity {
     }
 
     public void update() {
-        
+        setAction();
+
+        collisionOn = false;
+        gp.checker.checkTile(this);
+
+        if (collisionOn == false) {
+            switch (direction) {
+                case "up": worldY -= speed; break; 
+                case "down": worldY += speed; break;
+                case "left": worldX -= speed; break;
+                case "right": worldX += speed; break;
+            }
+        }  
+        spriteCounter ++;
+        //change 13 in order to change speed at which sprites switch
+        if (spriteCounter > 13) {
+            if (spriteNumber == 1) {
+                spriteNumber = 2;
+            }
+            else if (spriteNumber == 2) {
+                spriteNumber = 1;
+            }
+            spriteCounter = 0;
+        }
     }
 
     
