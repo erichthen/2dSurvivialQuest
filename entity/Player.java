@@ -60,6 +60,12 @@ public class Player extends Entity {
         }
     }
 
+    public void interactNPC(int i) {
+        if (i != 999) {
+            //todo: do something
+        }
+    }
+
     public int getHasKey() {
         return keyCount;
     }
@@ -121,6 +127,10 @@ public class Player extends Entity {
 
             int objIndex = gp.checker.checkObject(this, true);
             interactObject(objIndex);
+
+            //check npc collision
+            int npcIndex = gp.checker.checkEntity(this, gp.npc);
+            interactNPC(npcIndex);
 
             if (collisionOn == false) {
                 switch (direction) {
